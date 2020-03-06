@@ -38,13 +38,13 @@ function Table() {
     const rulerRef = React.useRef(getRuler());
 
     useEffect(() => {
-        const { clientWidth } = tableRef.current;
+        const width = tableRef.current.clientWidth || 800; // Might be 0 in IE
         dispatch({
             type: 'INIT',
             payload: {
                 columns: ['foo', 'bar', 'baz', 'qux', 'quz'].map(name => ({
                     name,
-                    size: clientWidth / 5,
+                    size: width / 5,
                 })),
             },
         });
@@ -87,7 +87,7 @@ function getRuler() {
         width: RULER_WIDTH + 'px',
         top: 0,
         bottom: 0,
-        backgroundColor: '#ff00000f',
+        backgroundColor: 'rgba(255,0,0,0.2)',
     });
     return ruler;
 }
