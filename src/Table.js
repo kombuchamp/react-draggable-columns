@@ -27,6 +27,14 @@ function reducer(state = {}, action) {
             if (column.size !== newSize) {
                 column.size = newSize;
             }
+            break;
+        case 'SWAP_COLUMNS':
+            const { columns } = state;
+            const { index1, index2 } = action.payload;
+            [columns[index1], columns[index2]] = [
+                columns[index2],
+                columns[index1],
+            ];
     }
     return { ...state };
 }
@@ -55,19 +63,48 @@ function Table() {
             <div className={classNames(css.table, 'root-table')} ref={tableRef}>
                 <Header
                     columns={state.columns}
-                    onColumnDragStart={index => {
+                    onColumnResizeStart={index => {
                         const left = state.columns
                             .slice(0, index + 1)
                             .reduce((result, { size }) => result + size, 0);
                         rulerRef.current.style.left = left - RULER_WIDTH + 'px';
                         tableRef.current.appendChild(rulerRef.current);
                     }}
-                    onColumnDrag={x => {
+                    onColumnResize={x => {
                         rulerRef.current.style.transform = `translateX(${x}px)`;
                     }}
-                    onColumnDragStop={() => {
+                    onColumnResizeStop={() => {
                         rulerRef.current.style.transform = '';
                         tableRef.current.removeChild(rulerRef.current);
+                    }}
+                    onDragStop={(x, index) => {
+                        const isDraggingLeft = x < 0;
+                        x = Math.abs(x);
+                        if (x < 50) return;
+                        const targetWidth = state.columns[index].size;
+                        x = x - targetWidth / 2;
+                        let start = isDraggingLeft ? index - 1 : index + 1;
+                        let increment = isDraggingLeft ? -1 : 1;
+                        let i;
+                        for (
+                            i = start;
+                            i >= 0 && i < state.columns.length;
+                            i += increment
+                        ) {
+                            const colSize = state.columns[i].size;
+                            if (x < colSize) break;
+                            x -= colSize;
+                        }
+                        dispatch({
+                            type: 'SWAP_COLUMNS',
+                            payload: {
+                                index1: index,
+                                index2: Math.max(
+                                    0,
+                                    Math.min(i, state.columns.length - 1)
+                                ),
+                            },
+                        });
                     }}
                 />
                 {Array(10)

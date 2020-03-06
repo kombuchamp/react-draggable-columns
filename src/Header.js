@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import css from './Header.module.css';
-import { Resizable, ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 
 import { DispatchContext } from './Table';
 
 const Header = ({
     columns,
-    onColumnDragStart,
-    onColumnDrag,
-    onColumnDragStop,
+    onColumnResizeStart,
+    onColumnResize,
+    onColumnResizeStop,
+    onDragStop,
 }) => {
     const dispatch = React.useContext(DispatchContext);
 
@@ -24,18 +24,37 @@ const Header = ({
                     >
                         {name}
                         <Draggable
+                            position={{ x: 0, y: 0 }}
+                            axis={'x'}
+                            onStop={(e, dragData) =>
+                                onDragStop(dragData.x, index)
+                            }
+                        >
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    right: 0,
+                                    top: 0,
+                                    bottom: 0,
+                                    background: '#f0ffffc0',
+                                }}
+                            />
+                        </Draggable>
+                        <Draggable
                             axis={'x'}
                             position={{ x: 0, y: 0 }}
                             onStart={(e, dragData) => {
-                                onColumnDragStart(index);
+                                e.stopPropagation();
+                                onColumnResizeStart(index);
                                 queueMicrotask(() =>
                                     dragData.node.classList.add(css.dragging)
                                 );
                             }}
-                            onDrag={(e, dragData) => onColumnDrag(dragData.x)}
+                            onDrag={(e, dragData) => onColumnResize(dragData.x)}
                             onStop={(e, dragData) => {
                                 dragData.node.classList.remove(css.dragging);
-                                onColumnDragStop();
+                                onColumnResizeStop();
                                 dispatch({
                                     type: 'COLUMN_RESIZE',
                                     payload: {
