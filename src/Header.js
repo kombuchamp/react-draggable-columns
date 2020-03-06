@@ -3,6 +3,8 @@ import css from './Header.module.css';
 import Draggable from 'react-draggable';
 
 import { DispatchContext } from './Table';
+import DraggingPhantom from './DraggingPhantom';
+import Resizer from './Resizer';
 
 const Header = ({
     columns,
@@ -23,9 +25,7 @@ const Header = ({
                         style={{ width: size }}
                     >
                         {name}
-                        <Draggable
-                            position={{ x: 0, y: 0 }}
-                            axis={'x'}
+                        <DraggingPhantom
                             onStart={(e, dragData) => {
                                 dragData.node.style.opacity = '0.5';
                             }}
@@ -34,23 +34,9 @@ const Header = ({
                                 onDragStop(dragData.x, index);
                             }}
                         >
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    left: 0,
-                                    right: 0,
-                                    top: 0,
-                                    bottom: 0,
-                                    background: '#f0ffffc0',
-                                    opacity: '0',
-                                }}
-                            >
-                                {name}
-                            </div>
-                        </Draggable>
-                        <Draggable
-                            axis={'x'}
-                            position={{ x: 0, y: 0 }}
+                            {name}
+                        </DraggingPhantom>
+                        <Resizer
                             onStart={(e, dragData) => {
                                 e.stopPropagation();
                                 onColumnResizeStart(index);
@@ -72,7 +58,7 @@ const Header = ({
                             }}
                         >
                             <div className={css.resizer} />
-                        </Draggable>
+                        </Resizer>
                     </div>
                 );
             })}
