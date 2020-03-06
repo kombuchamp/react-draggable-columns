@@ -1,0 +1,10 @@
+.table{
+    position: relative;
+    background: whitesmoke;
+    border: 1px solid aqua;
+    width: 800px;
+    height: auto;
+    margin: 50px auto;
+    overflow-y: auto;
+    box-sizing: content-box;
+}
