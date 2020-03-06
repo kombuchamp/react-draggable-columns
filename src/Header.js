@@ -26,9 +26,13 @@ const Header = ({
                         <Draggable
                             position={{ x: 0, y: 0 }}
                             axis={'x'}
-                            onStop={(e, dragData) =>
-                                onDragStop(dragData.x, index)
-                            }
+                            onStart={(e, dragData) => {
+                                dragData.node.style.opacity = '0.5';
+                            }}
+                            onStop={(e, dragData) => {
+                                dragData.node.style.opacity = '0';
+                                onDragStop(dragData.x, index);
+                            }}
                         >
                             <div
                                 style={{
@@ -38,8 +42,11 @@ const Header = ({
                                     top: 0,
                                     bottom: 0,
                                     background: '#f0ffffc0',
+                                    opacity: '0',
                                 }}
-                            />
+                            >
+                                {name}
+                            </div>
                         </Draggable>
                         <Draggable
                             axis={'x'}
@@ -48,12 +55,12 @@ const Header = ({
                                 e.stopPropagation();
                                 onColumnResizeStart(index);
                                 queueMicrotask(() =>
-                                    dragData.node.classList.add(css.dragging)
+                                    dragData.node.classList.add(css.resizing)
                                 );
                             }}
                             onDrag={(e, dragData) => onColumnResize(dragData.x)}
                             onStop={(e, dragData) => {
-                                dragData.node.classList.remove(css.dragging);
+                                dragData.node.classList.remove(css.resizing);
                                 onColumnResizeStop();
                                 dispatch({
                                     type: 'COLUMN_RESIZE',
@@ -64,7 +71,7 @@ const Header = ({
                                 });
                             }}
                         >
-                            <div className={css.dragger} />
+                            <div className={css.resizer} />
                         </Draggable>
                     </div>
                 );

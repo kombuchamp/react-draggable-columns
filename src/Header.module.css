@@ -9,7 +9,7 @@
     border: 1px solid dodgerblue;
     position: relative;
 }
-.dragger{
+.resizer{
     position: absolute;
     right: 0;
     top: 0;
@@ -19,7 +19,7 @@
     cursor: col-resize;
     user-select: none;
 }
-.dragger.dragging{
+.resizer.resizing{
     background-color: rgba(255,0,0,0.2);
 }
 :global(.react-resizable){
