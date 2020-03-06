@@ -3,7 +3,7 @@ import css from './Header.module.css';
 import { Resizable, ResizableBox } from 'react-resizable';
 import Draggable from 'react-draggable';
 
-import { DispatchContext } from './App';
+import { DispatchContext } from './Table';
 
 const Header = ({
     columns,
@@ -13,17 +13,12 @@ const Header = ({
 }) => {
     const dispatch = React.useContext(DispatchContext);
 
-    const cellRef = React.useRef();
-    const draggerRef = React.createRef();
-    const headerRef = React.createRef();
-
     return (
-        <div className={css.header} ref={headerRef}>
+        <div className={css.header}>
             {columns.map(({ name, size }, index) => {
                 return (
                     <div
                         key={index}
-                        ref={cellRef}
                         className={css.headerCell}
                         style={{ width: size }}
                     >
@@ -33,7 +28,7 @@ const Header = ({
                             position={{ x: 0, y: 0 }}
                             onStart={(e, dragData) => {
                                 onColumnDragStart(index);
-                                requestIdleCallback(() =>
+                                queueMicrotask(() =>
                                     dragData.node.classList.add(css.dragging)
                                 );
                             }}
@@ -50,7 +45,7 @@ const Header = ({
                                 });
                             }}
                         >
-                            <div className={css.dragger} ref={draggerRef} />
+                            <div className={css.dragger} />
                         </Draggable>
                     </div>
                 );

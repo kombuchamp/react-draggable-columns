@@ -1,6 +1,4 @@
 .header{
-    /*display: flex;*/
-    /*flex-wrap: nowrap;*/
     position: relative;
     white-space: nowrap;
 }
@@ -24,9 +22,6 @@
 .dragger.dragging{
     background-color: rgba(255,0,0,0.2);
 }
-
-
-
 :global(.react-resizable){
     position: relative;
 }
